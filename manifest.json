@@ -1,0 +1,31 @@
+{
+  "name": "Village Kids",
+  "short_name": "Village Kids",
+  "description": "Village Church Irvine — Kids Ministry Dashboard",
+  "start_url": "/village-kids-dashboard/",
+  "scope": "/village-kids-dashboard/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#2d2e2e",
+  "theme_color": "#2d2e2e",
+  "lang": "en",
+  "categories": ["productivity"],
+  "icons": [
+    { "src": "/village-kids-dashboard/icon-72.png",  "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/village-kids-dashboard/icon-96.png",  "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/village-kids-dashboard/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/village-kids-dashboard/icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/village-kids-dashboard/icon-152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/village-kids-dashboard/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/village-kids-dashboard/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/village-kids-dashboard/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "/village-kids-dashboard/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
