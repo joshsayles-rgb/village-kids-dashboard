@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Village Kids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ──────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── TOKENS ─────────────────────────────────────── */
+:root{
+  --blue:#5d8da1;    --blue-d:#3a6e85;   --blue-l:rgba(93,141,161,.12);
+  --green:#a0b46a;   --green-d:#6b8a3e;  --green-l:rgba(160,180,106,.12);
+  --tan:#a9794d;     --tan-d:#7a5030;    --tan-l:rgba(169,121,77,.12);
+  --red:#954a4b;     --red-d:#7a2e2f;    --red-l:rgba(149,74,75,.12);
+  --dark:#2d2e2e;    --dark2:#373838;
+  --cream:#f5f2ed;   --off:#edeae4;      --off2:#e4e0d9;
+  --white:#fff;      --rule:rgba(55,56,56,.08);   --rule2:rgba(55,56,56,.14);
+  --text:#2d2e2e;    --muted:rgba(45,46,46,.45);  --faint:rgba(45,46,46,.22);
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --sh-sm:0 1px 2px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.05);
+  --r:8px; --rl:10px; --rxl:16px;
+}
+body.dark{
+  --cream:#1e1f1f;  --off:#252627;   --off2:#2c2e2e;  --white:#252627;
+  --rule:rgba(255,255,255,.07);  --rule2:rgba(255,255,255,.12);
+  --text:#e8e5df;   --muted:rgba(232,229,223,.45);  --faint:rgba(232,229,223,.22);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.3);
+  --sh-sm:0 1px 2px rgba(0,0,0,.2),0 2px 8px rgba(0,0,0,.2);
+  --blue-l:rgba(93,141,161,.18); --tan-l:rgba(169,121,77,.18); --red-l:rgba(149,74,75,.2);
+}
+
+/* ── BASE ────────────────────────────────────────── */
+html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+
+/* ── ANIMATIONS ─────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes alertPulse{0%,100%{background:#954a4b}50%{background:#b05a5b}}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.anim{opacity:0;animation:fadeUp .45s ease forwards}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}
+.d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}
+.d7{animation-delay:.35s}.d8{animation-delay:.4s}
+
+/* ── LAYOUT ──────────────────────────────────────── */
+header{
+  background:var(--dark);height:62px;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.logo img{height:28px;display:block;opacity:.9}
+.hright{display:flex;align-items:center;gap:18px}
+.hclock{font-family:'DM Serif Display',serif;font-size:22px;color:rgba(255,255,255,.85);letter-spacing:.01em}
+.hdate{font-size:11px;color:rgba(255,255,255,.32);letter-spacing:.06em;text-transform:uppercase}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);transition:all .3s}
+.sync-dot.loading{animation:pulse .9s ease-in-out infinite}
+.sync-dot.error{background:var(--red);animation:none}
+.icon-btn{background:none;border:none;padding:4px;color:rgba(255,255,255,.4);line-height:0;transition:color .2s}
+.icon-btn:hover{color:rgba(255,255,255,.8)}
+.icon-btn svg{width:16px;height:16px}
+
+.page{max-width:960px;margin:0 auto;padding:20px 16px 60px;display:flex;flex-direction:column;gap:16px}
+
+/* ── TICKER ──────────────────────────────────────── */
+.ticker-wrap{background:var(--tan);overflow:hidden;height:32px;display:flex;align-items:center;width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw}
+.ticker-wrap.hidden{display:none}
+.ticker-track{display:flex;white-space:nowrap;will-change:transform}
+.ticker-item{display:inline-flex;align-items:center;padding:0 36px;font-size:12px;font-weight:600;color:#fff;letter-spacing:.03em;gap:10px}
+.ticker-sep{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4)}
+
+/* ── ROOM MODE BAR ───────────────────────────────── */
+.room-bar{background:var(--blue);padding:5px 24px;display:none;align-items:center;gap:8px}
+.room-bar.visible{display:flex}
+.room-bar-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.room-bar-name{font-size:13px;font-weight:500;color:#fff}
+
+/* ── STATUS ──────────────────────────────────────── */
+.status-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.status-sep{color:var(--rule2)}
+.status-btn{background:none;border:1px solid var(--rule2);color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:4px;transition:all .15s}
+.status-btn:hover{background:var(--off);color:var(--text)}
+
+/* ── CARDS ───────────────────────────────────────── */
+.card{background:var(--white);border-radius:var(--rl);padding:16px 18px;border:1px solid var(--rule);box-shadow:var(--sh-sm)}
+.dark-card{background:var(--dark);border-radius:var(--rl);padding:18px 20px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.dark-card::before{content:'\201C';font-family:'DM Serif Display',serif;font-size:80px;color:rgba(255,255,255,.04);position:absolute;top:-6px;left:6px;line-height:1;pointer-events:none}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid var(--rule)}
+.card-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text)}
+.card-meta{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ── DATE BANNER ─────────────────────────────────── */
+.date-banner{background:var(--dark);border-radius:var(--rl);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:var(--sh)}
+.date-day{font-family:'DM Serif Display',serif;font-size:20px;color:rgba(255,255,255,.9)}
+.date-full{font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.svc-tags{display:flex;gap:6px;flex-wrap:wrap}
+.svc-tag{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.svc-tag-1{background:rgba(93,141,161,.22);color:#a8cbda}
+.svc-tag-2{background:rgba(160,180,106,.2);color:#c4d494}
+.svc-note{font-size:11px;color:rgba(255,255,255,.35);font-style:italic;margin-top:2px}
+
+/* ── COUNTDOWN ───────────────────────────────────── */
+.countdown-bar{background:var(--dark);border-radius:var(--rl);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:var(--sh);cursor:pointer;transition:opacity .15s}
+.countdown-bar:hover{opacity:.92}
+.cd-label{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.32)}
+.cd-event{font-size:16px;font-weight:600;color:#fff;margin-top:2px;line-height:1.25}
+.cd-hint{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:3px}
+.cd-timer{font-family:'DM Serif Display',serif;font-size:48px;color:#fff;letter-spacing:.01em;line-height:1;transition:color .3s}
+.cd-timer.urgent{color:#e87a6a}
+.cd-pill{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:#fff;padding:5px 12px;border-radius:20px}
+
+/* ── PICKUP BANNER ───────────────────────────────── */
+.pickup-banner{background:var(--tan);border-radius:var(--rl);padding:12px 18px;display:flex;align-items:center;gap:12px;animation:slideUp .3s ease}
+.pickup-banner.hidden{display:none}
+.pickup-icon{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pickup-icon svg{width:18px;height:18px;fill:#fff}
+.pickup-title{font-size:14px;font-weight:600;color:#fff}
+.pickup-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px}
+
+/* ── ANNOUNCEMENTS ───────────────────────────────── */
+.ann-empty{font-size:13px;color:var(--muted);font-style:italic;padding:4px 0}
+.ann-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule);align-items:flex-start}
+.ann-item:last-child{border-bottom:none;padding-bottom:0}
+.ann-bar{width:2.5px;min-height:26px;border-radius:2px;flex-shrink:0;margin-top:2px}
+.ann-body{flex:1;min-width:0}
+.ann-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.35}
+.ann-detail{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
+.ann-tag{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border-radius:3px;margin-top:4px;display:inline-block}
+
+/* ── SERVICE TABS ────────────────────────────────── */
+.svc-tabs{display:flex;border-bottom:1px solid var(--rule);margin-bottom:10px}
+.svc-tab{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 13px;background:none;border:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
+.svc-tab.s1{color:var(--blue);border-bottom-color:var(--blue)}
+.svc-tab.s2{color:var(--green);border-bottom-color:var(--green)}
+.svc-panel{display:none}.svc-panel.active{display:block}
+
+/* ── CLASS TABS ──────────────────────────────────── */
+.class-tab-bar{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--rule);margin-bottom:12px}
+.class-tab{font-size:11px;font-weight:600;letter-spacing:.02em;padding:5px 11px;background:none;border:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s}
+.class-tab.active{color:var(--tan);border-bottom-color:var(--tan)}
+.class-panel{display:none}.class-panel.active{display:block}
+body.room-mode .class-tab-bar{display:none}
+body.room-mode .class-panel{display:none}
+body.room-mode .class-panel.room-active{display:block}
+
+/* ── SCHEDULE ────────────────────────────────────── */
+.sched-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.svc-label{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:7px}
+.svc-label-1{background:var(--blue-l);color:var(--blue)}
+.svc-label-2{background:var(--green-l);color:var(--green-d)}
+body.dark .svc-label-2{color:var(--green)}
+.sched-row{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px solid var(--rule)}
+.sched-row:last-child{border-bottom:none}
+.sched-row.now{background:var(--tan-l);border-radius:6px;padding:6px 8px;margin:0 -8px;border-bottom:none}
+.sched-row.now + .sched-row{border-top:none}
+.sched-time{font-family:'DM Serif Display',serif;font-size:11px;color:var(--muted);min-width:46px;flex-shrink:0;padding-top:2px}
+.sched-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.sched-info{flex:1}
+.sched-event{font-size:13px;font-weight:500;color:var(--text);line-height:1.3}
+.sched-detail{font-size:11px;color:var(--muted);margin-top:1px}
+.now-pill{font-size:9px;font-weight:700;background:var(--red);color:#fff;padding:1px 5px;border-radius:10px;margin-left:5px;vertical-align:middle;letter-spacing:.04em;text-transform:uppercase}
+.sched-progress{height:2px;background:var(--rule);border-radius:1px;margin-top:5px;overflow:hidden}
+.sched-progress-fill{height:100%;background:var(--tan);border-radius:1px}
+.no-sched{font-size:12px;color:var(--muted);padding:6px 0;font-style:italic}
+.curriculum-btn{display:inline-flex;align-items:center;gap:6px;background:var(--blue-l);border:1px solid rgba(93,141,161,.2);color:var(--blue);font-size:11px;font-weight:600;letter-spacing:.04em;padding:5px 11px;border-radius:5px;text-decoration:none;margin-bottom:10px;transition:background .15s}
+.curriculum-btn:hover{background:rgba(93,141,161,.2)}
+.curriculum-btn svg{width:12px;height:12px;flex-shrink:0}
+.vol-notes{background:var(--tan-l);border:1px solid rgba(169,121,77,.18);border-radius:6px;padding:7px 11px;margin-bottom:10px}
+.vol-notes-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tan);margin-bottom:2px}
+.vol-notes-text{font-size:12px;color:var(--text);line-height:1.5}
+
+/* ── CATECHISM ───────────────────────────────────── */
+.dc-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.dc-num{font-family:'DM Serif Display',serif;font-size:11px;color:rgba(255,255,255,.2)}
+.dc-toggle{display:flex;align-items:center;gap:3px}
+.dc-mode-btn{background:none;border:none;color:rgba(255,255,255,.3);font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:3px;cursor:pointer;transition:all .15s}
+.dc-mode-btn.active{background:rgba(255,255,255,.14);color:rgba(255,255,255,.75)}
+.dc-question{font-family:'DM Serif Display',serif;font-size:15px;line-height:1.55;color:rgba(255,255,255,.88);margin-bottom:6px}
+.dc-scripture{font-size:11px;color:rgba(255,255,255,.28);font-style:italic;margin-bottom:10px;letter-spacing:.02em}
+.dc-divider{height:1px;background:rgba(255,255,255,.07);margin-bottom:10px}
+.dc-answer{font-size:13px;line-height:1.65;color:rgba(255,255,255,.7);display:none}
+.dc-answer.revealed{display:block;animation:fadeUp .3s ease}
+.dc-reveal-btn{background:none;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.4);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:5px 11px;border-radius:4px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.dc-reveal-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.8)}
+
+/* ── MEMORY VERSE ────────────────────────────────── */
+.verse-text{font-family:'DM Serif Display',serif;font-size:17px;line-height:1.7;color:rgba(255,255,255,.88);font-style:italic;margin-bottom:6px}
+.verse-ref{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--tan)}
+
+/* ── SHIMMER ─────────────────────────────────────── */
+.shimmer{height:12px;border-radius:3px;margin:7px 0;background:linear-gradient(90deg,var(--off) 25%,var(--off2) 50%,var(--off) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+.shimmer.w80{width:80%}.shimmer.w60{width:60%}.shimmer.w45{width:45%}
+
+/* ── ACTION BUTTONS ──────────────────────────────── */
+.action-btn{display:flex;align-items:center;justify-content:center;gap:9px;border:none;border-radius:var(--rl);padding:13px 18px;width:100%;cursor:pointer;transition:opacity .15s;box-shadow:var(--sh-sm);text-decoration:none}
+.action-btn:hover{opacity:.88}
+.action-btn svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
+.action-btn span{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#fff;letter-spacing:.02em}
+.btn-green{background:var(--green)}
+.btn-blue{background:var(--blue)}
+.btn-red{background:var(--red)}
+
+/* ── SHEET OVERLAY ───────────────────────────────── */
+.sheet-overlay{display:none;position:fixed;inset:0;background:rgba(20,20,20,.6);z-index:400;align-items:flex-end;justify-content:center}
+.sheet-overlay.open{display:flex}
+.sheet{background:var(--cream);border-radius:18px 18px 0 0;width:100%;max-width:560px;padding:0 0 32px}
+.sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--rule2);margin:12px auto 0}
+.sheet-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);text-align:center;padding:10px 20px 12px;border-bottom:1px solid var(--rule)}
+.sheet-body{padding:14px 20px;display:flex;flex-direction:column;gap:10px}
+.sheet-close{margin:6px 20px 0;width:calc(100% - 40px);padding:11px;border-radius:7px;border:none;background:var(--dark);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+
+/* ── COUNTDOWN PICKER ────────────────────────────── */
+.cd-svc-tabs{display:flex;gap:8px}
+.cd-svc-btn{flex:1;padding:8px;border-radius:6px;border:1px solid var(--rule2);background:var(--off);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.cd-svc-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.cd-class-btn{padding:9px 13px;border-radius:6px;border:1px solid var(--rule2);background:var(--off);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;text-align:left;width:100%;transition:all .15s}
+.cd-class-btn.active{background:var(--tan);border-color:var(--tan);color:#fff}
+.picker-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* ── ROOM ALERT ──────────────────────────────────── */
+.ra-option{display:flex;align-items:center;gap:12px;background:var(--off);border:1px solid var(--rule2);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .15s;width:100%;text-align:left}
+.ra-option:hover{background:var(--red-l);border-color:rgba(149,74,75,.25)}
+.ra-option svg{width:18px;height:18px;flex-shrink:0}
+.ra-option span{font-size:13px;font-weight:500;color:var(--text)}
+.ra-sent{background:var(--green-l);border:1px solid rgba(107,138,62,.25);border-radius:8px;padding:12px;font-size:13px;font-weight:500;color:var(--green-d);text-align:center;display:none}
+body.dark .ra-sent{color:var(--green)}
+
+/* ── INCOMING ALERT BANNER (admin) ───────────────── */
+.ia-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:300;background:var(--red);padding:12px 20px;flex-direction:column;gap:7px;box-shadow:0 4px 20px rgba(0,0,0,.25);animation:slideUp .3s ease}
+.ia-banner.active{display:flex}
+.ia-top{display:flex;align-items:center;justify-content:space-between}
+.ia-heading{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.ia-clear-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:4px;cursor:pointer}
+.ia-alert-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border-radius:6px;padding:7px 11px}
+.ia-room{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.6);min-width:80px;flex-shrink:0}
+.ia-msg{font-size:13px;font-weight:500;color:#fff;flex:1}
+.ia-time{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* ── URGENT ALERT OVERLAY ────────────────────────── */
+.alert-overlay{display:none;position:fixed;inset:0;background:var(--red);z-index:9999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;animation:alertPulse 1.2s ease-in-out infinite}
+.alert-overlay.active{display:flex}
+.alert-icon{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.alert-icon svg{width:28px;height:28px;fill:#fff}
+.alert-title{font-family:'DM Serif Display',serif;font-size:32px;color:#fff;margin-bottom:8px;line-height:1.2}
+.alert-msg{font-size:16px;color:rgba(255,255,255,.85);max-width:440px;line-height:1.55;margin-bottom:24px}
+.alert-dismiss{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:9px 22px;border-radius:5px;cursor:pointer;transition:background .2s}
+.alert-dismiss:hover{background:rgba(255,255,255,.28)}
+
+/* ── ENCOURAGEMENT ───────────────────────────────── */
+.enc-type-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:10px}
+.enc-type-joke{background:var(--tan-l);color:var(--tan)}
+.enc-type-verse{background:var(--blue-l);color:var(--blue)}
+.enc-setup{font-size:13px;font-weight:500;color:var(--muted);line-height:1.55;margin-bottom:8px}
+.enc-punchline{font-family:'DM Serif Display',serif;font-size:18px;line-height:1.5;color:var(--text);padding:10px 14px;background:var(--off);border-radius:7px}
+.enc-verse-text{font-family:'DM Serif Display',serif;font-size:18px;line-height:1.65;color:var(--text);font-style:italic}
+.enc-verse-ref{font-size:11px;font-weight:600;color:var(--tan);margin-top:7px;letter-spacing:.04em}
+.enc-btn-row{display:flex;gap:8px;margin-top:4px}
+.enc-next-btn{flex:1;padding:10px;border-radius:7px;border:1px solid var(--rule2);background:var(--off);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.enc-next-btn:hover{opacity:.8}
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media(max-width:680px){
+  .two-col{grid-template-columns:1fr}
+  .sched-grid{grid-template-columns:1fr}
+  header{padding:0 14px}
+  .page{padding:14px 10px 48px}
+  .hdate{display:none}
+  .class-tab{padding:4px 8px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- URGENT ALERT -->
+<div class="alert-overlay" id="alertOverlay">
+  <div class="alert-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+  <div class="alert-title" id="alertTitle">Urgent Alert</div>
+  <div class="alert-msg" id="alertMsg"></div>
+  <button class="alert-dismiss" onclick="State.dismissUrgentAlert()">Dismiss</button>
+</div>
+
+<!-- INCOMING ROOM ALERTS (admin mode) -->
+<div class="ia-banner" id="iaBanner">
+  <div class="ia-top">
+    <span class="ia-heading">Room alert</span>
+    <button class="ia-clear-btn" onclick="clearRoomAlerts()">Clear all</button>
+  </div>
+  <div id="iaList"></div>
+</div>
+
+<header>
+  <div class="logo"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAGDBH8DASIAAhEBAxEB/8QAHQABAAMBAQEBAQEAAAAAAAAAAAcICQYFBAMCAf/EAFsQAAEDAgMDBQURCwoFBAMAAAABAgMEBQYHEQgSIRMxQVFhCRQicXIVFhcYIzI3OFZ0dYGVsrO00jM2QlJTV2KCkZLTJDVDVXN2lKGjsWODk6LBZ6XU5CaE0f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCmQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/2Q==" alt="Village Kids"></div>
+  <div class="hright">
+    <span class="hdate" id="hdate"></span>
+    <span class="hclock" id="hclock">--:--</span>
+    <button class="icon-btn" onclick="UI.toggleDark()" title="Toggle dark mode">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+    </button>
+    <div class="sync-dot" id="syncDot"></div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-wrap hidden" id="tickerWrap">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- ROOM MODE BAR -->
+<div class="room-bar" id="roomBar">
+  <span class="room-bar-label">Room</span>
+  <span class="room-bar-name" id="roomBarName"></span>
+</div>
+
+<div class="page" id="page">
+
+  <!-- STATUS -->
+  <div class="status-bar anim d1">
+    <span id="statusText">Loading&hellip;</span>
+    <span class="status-sep">&middot;</span>
+    <span id="lastSync"></span>
+    <span class="status-sep">&middot;</span>
+    <button class="status-btn" onclick="Sync.fetch()">Refresh</button>
+    <span class="status-sep">&middot;</span>
+    <a class="status-btn" href="/village-kids-dashboard/admin.html">Admin</a>
+  </div>
+
+  <!-- PICKUP BANNER -->
+  <div class="pickup-banner hidden anim d2" id="pickupBanner">
+    <div class="pickup-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+    <div>
+      <div class="pickup-title">Pickup time</div>
+      <div class="pickup-sub">Parents are on their way</div>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-bar anim d2" id="countdownBar" style="display:none" onclick="UI.openCdPicker()">
+    <div>
+      <div class="cd-label">Next up</div>
+      <div class="cd-event" id="cdEvent">&hellip;</div>
+      <div class="cd-hint" id="cdHint">Tap to change class</div>
+    </div>
+    <div id="cdRight"><div class="cd-timer">--:--</div></div>
+  </div>
+
+  <!-- DATE BANNER -->
+  <div class="date-banner anim d3">
+    <div>
+      <div class="date-day" id="dateBig"></div>
+      <div class="date-full" id="dateFull"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+      <div class="svc-tags">
+        <span class="svc-tag svc-tag-1" id="svc1Label">1st Service</span>
+        <span class="svc-tag svc-tag-2" id="svc2Label">2nd Service</span>
+      </div>
+      <div class="svc-note" id="svcNote"></div>
+    </div>
+  </div>
+
+  <!-- ANNOUNCEMENTS (hidden in room mode) -->
+  <div class="two-col anim d4" id="annSection">
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">All services</span><span class="card-meta">General</span></div>
+      <div id="annGlobal"><div class="shimmer w80"></div><div class="shimmer w60"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">By service</span></div>
+      <div class="svc-tabs">
+        <button class="svc-tab s1" id="tab1" onclick="UI.switchSvcTab(1)">1st</button>
+        <button class="svc-tab"    id="tab2" onclick="UI.switchSvcTab(2)">2nd</button>
+      </div>
+      <div class="svc-panel active" id="panelS1"><div id="annS1"><div class="shimmer w80"></div></div></div>
+      <div class="svc-panel"        id="panelS2"><div id="annS2"></div></div>
+    </div>
+  </div>
+
+  <!-- CLASS SCHEDULES -->
+  <div class="card anim d5" id="classCard">
+    <div class="card-hdr"><span class="card-title">Class schedules</span><span class="card-meta">By room</span></div>
+    <div class="class-tab-bar" id="classTabBar"></div>
+    <div id="classPanels"><div class="shimmer w80"></div><div class="shimmer w60"></div></div>
+  </div>
+
+  <!-- CATECHISM + VERSE (hidden in room mode) -->
+  <div class="two-col anim d6" id="faithSection">
+    <div class="dark-card" id="catCard">
+      <div class="dc-label">
+        <span>Catechism &mdash; this week</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="dc-num" id="catNum"></span>
+          <div class="dc-toggle">
+            <button class="dc-mode-btn active" id="catKids"  onclick="Cat.setMode('kids')">Kids</button>
+            <button class="dc-mode-btn"        id="catAdult" onclick="Cat.setMode('adult')">Adult</button>
+          </div>
+        </div>
+      </div>
+      <div class="dc-question" id="catQ"><div class="shimmer w80" style="background:rgba(255,255,255,.06);animation:none"></div></div>
+      <div class="dc-scripture" id="catS"></div>
+      <div class="dc-divider"></div>
+      <button class="dc-reveal-btn" id="catBtn" onclick="Cat.toggle()" style="display:none">
+        <span id="catBtnLabel">Reveal answer</span>
+      </button>
+      <div class="dc-answer" id="catA"></div>
+    </div>
+    <div class="dark-card" id="verseCard" style="display:none">
+      <div class="dc-label">Memory verse</div>
+      <div class="verse-text" id="verseText"></div>
+      <div class="verse-ref"  id="verseRef"></div>
+    </div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div style="display:flex;flex-direction:column;gap:10px" class="anim d7">
+    <div id="roomAlertSection" style="display:none">
+      <button class="action-btn btn-red" onclick="UI.openRoomAlert()">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>Send alert to admin</span>
+      </button>
+    </div>
+    <button class="action-btn btn-green" onclick="UI.openEnc()">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <span>Need encouragement?</span>
+    </button>
+    <a class="action-btn btn-blue" href="https://villagechurchirvine.churchcenter.com/people/forms/940401" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zm-2 8H7v-2h4v2zm4-4H7v-2h8v2zm0-4H7V7h8v2z"/></svg>
+      <span>Submit Sunday report</span>
+    </a>
+  </div>
+
+</div>
+
+<!-- COUNTDOWN PICKER -->
+<div class="sheet-overlay" id="cdPickerOverlay" onclick="if(event.target===this)UI.closeCdPicker()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Countdown schedule</div>
+    <div class="sheet-body">
+      <div class="picker-label" style="margin-bottom:6px">Service</div>
+      <div class="cd-svc-tabs">
+        <button class="cd-svc-btn active" id="cdBtn1" onclick="CD.setService('1st')">1st Service</button>
+        <button class="cd-svc-btn"        id="cdBtn2" onclick="CD.setService('2nd')">2nd Service</button>
+      </div>
+      <div class="picker-label" style="margin-top:12px;margin-bottom:6px">Class</div>
+      <div style="display:flex;flex-direction:column;gap:6px" id="cdClassList"></div>
+    </div>
+    <button class="sheet-close" onclick="UI.closeCdPicker()">Done</button>
+  </div>
+</div>
+
+<!-- ROOM ALERT PICKER -->
+<div class="sheet-overlay" id="raOverlay" onclick="if(event.target===this)UI.closeRoomAlert()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="raTitle">Send alert</div>
+    <div class="sheet-body">
+      <button class="ra-option" onclick="RoomAlert.send('I need another volunteer')">
+        <svg viewBox="0 0 24 24" fill="var(--blue)" width="18" height="18"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <span>I need another volunteer</span>
+      </button>
+      <button class="ra-option" onclick="RoomAlert.send('Bathroom break needed')">
+        <svg viewBox="0 0 24 24" fill="var(--tan)" width="18" height="18"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-4H8.5L11 7.5 13.5 12.5H12v4h-2z"/></svg>
+        <span>Bathroom break needed</span>
+      </button>
+      <button class="ra-option" onclick="RoomAlert.send('Medical situation — send help immediately')">
+        <svg viewBox="0 0 24 24" fill="var(--red)" width="18" height="18"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+        <span>Medical situation &mdash; send help immediately</span>
+      </button>
+      <button class="ra-option" onclick="RoomAlert.send('General — I need help')">
+        <svg viewBox="0 0 24 24" fill="var(--green)" width="18" height="18"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        <span>General &mdash; I need help</span>
+      </button>
+      <div class="ra-sent" id="raSent">Alert sent — admin has been notified.</div>
+    </div>
+    <button class="sheet-close" onclick="UI.closeRoomAlert()">Cancel</button>
+  </div>
+</div>
+
+<!-- ENCOURAGEMENT SHEET -->
+<div class="sheet-overlay" id="encOverlay" onclick="if(event.target===this)UI.closeEnc()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-body" id="encBody"></div>
+    <div class="enc-btn-row" style="padding:0 20px">
+      <button class="enc-next-btn" onclick="Enc.next()">Another one</button>
+    </div>
+    <button class="sheet-close" style="margin-top:6px" onclick="UI.closeEnc()">Close</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// --- CONSTANTS ---
+const WORKER_URL    = 'PASTE_YOUR_WORKER_URL_HERE';
+const REFRESH_MS    = 30000;
+const CLASS_ORDER   = ['Nursery','Toddler/Wobbler','Preschool','Kindergarten - 1st Grade','2nd - 3rd Grade','4th - 6th Grade'];
+const ANN_COLORS    = { Info:{bar:'#5d8da1',bg:'rgba(93,141,161,.1)',text:'#3a7490'}, Urgent:{bar:'#954a4b',bg:'rgba(149,74,75,.1)',text:'#7a2e2f'}, Event:{bar:'#a0b46a',bg:'rgba(160,180,106,.12)',text:'#608030'}, Prayer:{bar:'#a9794d',bg:'rgba(169,121,77,.1)',text:'#7a5030'} };
+const LS            = { DARK:'vk_dark', CD:'vk_cd', PIN_EXPIRE:'vk_pin_exp' };
+
+const NCC = [
+  ['What is our only hope in life and death?','That we are not our own but belong, body and soul, in life and in death, to God and to our Savior Jesus Christ.','That we are not our own but belong to God.','Romans 14:7\\u20138'],
+  ['What is God?','God is the creator and sustainer of everyone and everything. He is eternal, infinite, and unchangeable in his power and perfection, goodness and glory, wisdom, justice, and truth. Nothing happens except through him and by his will.','God is the creator of everyone and everything.','Psalm 86:15'],
+  ['How many persons are there in God?','There are three persons in the one true and living God: the Father, the Son, and the Holy Spirit. They are the same in substance, equal in power and glory.','There are three persons in one God: the Father, the Son, and the Holy Spirit.','Matthew 28:19'],
+  ['How and why did God create us?','God created us male and female in his own image to know him, love him, live with him, and glorify him. And it is right that we who were created by God should live to his glory.','God created us male and female in his own image to glorify him.','Genesis 1:27'],
+  ['What else did God create?','God created all things by his powerful Word, and all his creation was very good; everything flourished under his loving rule.','God created all things and all his creation was very good.','Genesis 1:31'],
+  ['How can we glorify God?','We glorify God by enjoying him, loving him, trusting him, and by obeying his will, commands, and law.','By loving him and by obeying his commands and law.','1 Corinthians 10:31'],
+  ['What does the law of God require?','Personal, perfect, and perpetual obedience; that we love God with all our heart, soul, mind, and strength; and love our neighbor as ourselves. What God forbids should never be done and what God commands should always be done.','That we love God with all our heart, soul, mind, and strength; and love our neighbor as ourselves.','Matthew 22:37\\u201340'],
+  ['What is the law of God stated in the Ten Commandments?','You shall have no other gods before me. You shall not make idols. You shall not take the name of the Lord your God in vain. Remember the Sabbath day. Honor your father and your mother. You shall not murder. You shall not commit adultery. You shall not steal. You shall not bear false witness. You shall not covet.','You shall have no other gods before me. You shall not make for yourself an idol. You shall not misuse the name of the Lord your God. Remember the Sabbath day by keeping it holy. Honor your father and your mother. You shall not murder. You shall not commit adultery. You shall not steal. You shall not give false testimony. You shall not covet.','Exodus 20:1\\u201317'],
+  ['What does God require in the fourth and fifth commandments?','Fourth, that on the Sabbath day we rest from our daily work and attend the church of God. Fifth, that we love and honor our father and our mother, submitting to their godly discipline and direction.','First, that we know God as the only true God. Second, that we avoid all idolatry. Third, that we treat God\'s name with fear and reverence.','Exodus 20:8'],
+  ['What does God require in the sixth, seventh, and eighth commandments?','Sixth, that we do not hurt, or hate, or be hostile to our neighbor, but be patient and peaceful, pursuing even our enemies with love. Seventh, that we live purely and faithfully in marriage, or in singleness, avoiding all unchaste actions, desires, words, looks, and thoughts. Eighth, that we do not take without permission that which belongs to someone else, but further the financial interests of our neighbor wherever we can and may.','Fourth, that on the Sabbath day we spend time in worship of God. Fifth, that we love and honor our father and our mother.','Matthew 5:44'],
+  ['What does God require in the ninth and tenth commandments?','Ninth, that we do not lie or deceive, but speak the truth in love. Tenth, that we are content, not envying anyone or resenting what God has given them or us.','Sixth, that we do not hurt or hate our neighbor. Seventh, that we live purely and faithfully. Eighth, that we do not take without permission that which belongs to someone else.','Ephesians 4:25'],
+  ['Can anyone keep the law of God perfectly?','Since the fall, no mere human has been able to keep the law of God perfectly, but consistently breaks it in thought, word, and deed.','Ninth, that we do not lie or deceive. Tenth, that we are content, not envying anyone.','Ecclesiastes 7:20'],
+  ['Since no one can keep the law, what is its purpose?','That we may know the holy nature and will of God, and the sinful nature and disobedience of our hearts; and thus our need of a Savior. The law also teaches and exhorts us to live a life worthy of our Savior.','Since the fall, no human has been able to keep the law of God perfectly.','Romans 3:20'],
+  ['What is sin?','Sin is rejecting or ignoring God in the world he created, rebelling against him by living without reference to him, not being or doing what he requires in his law \\u2014 resulting in our death and the disintegration of all creation.','No, but because of the disobedience of Adam and Eve we are all born in sin and guilt, unable to keep God\'s law.','1 John 3:4'],
+  ['What is idolatry?','Idolatry is trusting in created things rather than the Creator for our hope and happiness, significance and security.','That we may know the holy nature of God, and the sinful nature of our hearts; and thus our need of a Savior.','Galatians 5:19\\u201321'],
+  ['Will God allow our disobedience and idolatry to go unpunished?','No, every sin is against the sovereignty, holiness, and goodness of God, and against his righteous law, and God is righteously angry with our sins and will punish them in his just judgment both in this life, and in the life to come.','Sin is rejecting or ignoring God in the world he created, not being or doing what he requires in his law.','Hebrews 10:31'],
+  ['Is there any way to escape punishment and be reconciled to God?','Yes, to satisfy his justice, God himself, out of mere mercy, reconciles us to himself and delivers us from sin and its punishment through a Redeemer.','Idolatry is trusting in created things rather than the Creator.','John 3:16'],
+  ['Who is the Redeemer?','The only Redeemer is the Lord Jesus Christ, the eternal Son of God, in whom God became man and bore the penalty for sin himself.','No, God is righteously angry with our sins and will punish them both in this life, and in the life to come.','1 Timothy 2:5'],
+  ['What sort of Redeemer is needed to bring us back to God?','One who is truly human and also truly God.','Yes, God reconciles us to himself by a Redeemer.','Romans 1:3\\u20134'],
+  ['Why must the Redeemer be truly human?','That in human nature he might on our behalf perfectly obey the whole law and suffer the punishment for human sin; and also that he might sympathize with our weaknesses.','The only Redeemer is the Lord Jesus Christ.','Hebrews 2:17'],
+  ['Why must the Redeemer be truly God?','That because of his divine nature his obedience and suffering would be perfect and effective; and also that he would be able to bear the righteous anger of God against sin and yet overcome death.','One who is truly human and also truly God.','Isaiah 53:11'],
+  ['Why was it necessary for Christ to die?','Because the justice and truth of God required that satisfaction for our sins could be made in no other way than by the death of the Son of God.','That in human nature he might on our behalf perfectly obey the whole law and suffer the punishment for human sin.','Romans 3:25\\u201326'],
+  ['How is the grace of God made effective for us?','By the work of the Holy Spirit, who applies to us all that Christ has done.','That because of his divine nature his obedience and suffering would be perfect and effective.','Titus 3:5\\u20136'],
+  ['How can we be saved?','Only by faith in Jesus Christ and in his substitutionary atoning death on the cross; so even though I deserve divine judgment, Christ merited salvation for me through his sinless life, death, resurrection, and ascension.','Christ died willingly in our place to deliver us from the power and penalty of sin and bring us back to God.','Ephesians 2:8'],
+  ['What is faith in Jesus Christ?','Faith in Jesus Christ is acknowledging the truth of everything that God has revealed in his Word, and also receiving and resting on him alone for salvation as he is offered to us in the gospel.','Yes, because Christ\'s death on the cross fully paid the penalty for our sin, God will remember our sins no more.','John 3:36'],
+  ['Should those who have faith in Christ seek their salvation through their own works?','No, they should not, as the best human works cannot earn anything before God, though a life of good works is the natural response of a believing heart.','Every part of fallen creation.','Galatians 2:16'],
+  ['Since we are redeemed by grace alone, through faith alone, do we have to keep the law of God?','Yes, because Christ has taken away the curse of the law, we are free from its condemnation and are enabled through the Spirit to live according to it as the loving expression of our gratitude to God.','No, only those who are elected by God and united to Christ by faith.','Romans 8:4'],
+  ['What do we believe about the Holy Spirit?','That he is God, coeternal with the Father and the Son, and that God grants him without measure to all who believe.','They will be cast out from the presence of God, into hell, to be justly punished, forever.','Acts 5:3\\u20134'],
+  ['What is prayer?','Prayer is pouring out our hearts to God in praise, petition, confession of sin, and thanksgiving.','Only by faith in Jesus Christ and in his substitutionary atoning death on the cross.','1 Thessalonians 5:16\\u201318'],
+  ['With what attitude should we pray?','With love, perseverance, and gratefulness; in a humble, sincere manner, from a deep sense of our need, with faith that God will listen because of Christ alone and not because of our own merits.','Receiving and resting on him alone for salvation as he is offered to us in the gospel.','Romans 8:26'],
+  ['How is the Word of God to be read and heard?','With diligence, preparation, and prayer; so that we may accept it with faith, store it in our hearts, and practice it in our lives.','We believe in God the Father Almighty, Maker of heaven and earth; and in Jesus Christ his only Son our Lord, who was conceived by the Holy Spirit, born of the virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried. He descended into hell. The third day he rose again from the dead. He ascended into heaven, and is seated at the right hand of God the Father Almighty. We believe in the Holy Spirit, the holy catholic church, the communion of saints, the forgiveness of sins, the resurrection of the body, and the life everlasting.','Colossians 3:16'],
+  ['What is baptism?','Baptism is the washing with water in the name of the Father, the Son, and the Holy Spirit; it signifies and seals our adoption into Christ, our cleansing from sin, and our commitment to belong to God and to his people.','Justification means our declared righteousness before God. Sanctification means our gradual, growing righteousness.','Romans 6:3\\u20134'],
+  ['Is baptism with water the washing away of sin itself?','No, only the blood of Christ and the renewal of the Holy Spirit can cleanse us from sin.','No, everything necessary to salvation is found in Christ.','Mark 1:8'],
+  ['What is the church?','God chooses and preserves for himself a community elected for eternal life and united by faith, who love, follow, learn from, and worship God together. God sends out this community to proclaim the gospel and prefigure his kingdom by the quality of their life together and their love for one another.','Yes, so that our lives may show love and gratitude to God; and so that by our godly behavior others may be won to Christ.','Ephesians 1:22\\u201323'],
+  ['Where is Christ now?','Christ rose bodily from the grave on the third day after his death and is seated at the right hand of the Father, ruling his kingdom and interceding for us, until he returns to judge the living and the dead.','From the Holy Spirit.','Romans 8:34'],
+  ['What hope does everlasting life hold for us?','It reminds us that this present fallen world is not all there is; soon we will live with and enjoy God forever in the new city, in the new heaven and the new earth, where we will be fully and forever freed from all sin and will inhabit renewed, resurrection bodies in a renewed, restored creation.','That he is God, coeternal with the Father and the Son.','Revelation 21:1\\u20134']
+];;
+
+const ENCOURAGEMENT = [
+  // Jokes
+  {type:'joke', setup:'Why did the Sunday school teacher bring a ladder to class?', punchline:'Because the lesson was on going to new heights with God.'},
+  {type:'joke', setup:'What kind of car did the disciples drive?', punchline:'A Honda -- because the disciples were all in one Accord.'},
+  {type:'joke', setup:'Why did Noah have to punish the chickens on the ark?', punchline:'Because they were using fowl language.'},
+  {type:'joke', setup:'What do you call a sleeping dinosaur at Bible camp?', punchline:'A dino-snore.'},
+  {type:'joke', setup:'Why couldn\'t Jonah trust the ocean?', punchline:'Because he knew there was something fishy going on.'},
+  {type:'joke', setup:'What do you call a group of kids who love Bible trivia?', punchline:'A quiz-tian fellowship.'},
+  {type:'joke', setup:'Why did Moses cross the Red Sea?', punchline:'To get to the other side -- obviously. He was kind of committed at that point.'},
+  {type:'joke', setup:'What\'s a kids\' ministry volunteer\'s favorite kind of music?', punchline:'Soul music. Obviously.'},
+  {type:'joke', setup:'How do angels greet each other?', punchline:'Halo there.'},
+  {type:'joke', setup:'Why did the kids\' ministry volunteer bring a map to church?', punchline:'Because they heard the sermon was going to cover a lot of ground.'},
+  {type:'joke', setup:'What did the grape say when it got stepped on?', punchline:'Nothing. It just let out a little wine. (You earned this one.)'},
+  {type:'joke', setup:'How many kids\' ministry volunteers does it take to change a lightbulb?', punchline:'One to change it and five to bring snacks for the occasion.'},
+  // Verses
+  {type:'verse', text:'The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you.', ref:'Zephaniah 3:17'},
+  {type:'verse', text:'And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus, giving thanks to God the Father through him.', ref:'Colossians 3:17'},
+  {type:'verse', text:'Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.', ref:'Galatians 6:9'},
+  {type:'verse', text:'Jesus said, "Let the little children come to me, and do not hinder them, for the kingdom of heaven belongs to such as these."', ref:'Matthew 19:14'},
+  {type:'verse', text:'Whoever welcomes one of these little children in my name welcomes me.', ref:'Mark 9:37'},
+  {type:'verse', text:'He gives strength to the weary and increases the power of the weak.', ref:'Isaiah 40:29'},
+  {type:'verse', text:'I can do all this through him who gives me strength.', ref:'Philippians 4:13'},
+  {type:'verse', text:'Start children off on the way they should go, and even when they are old they will not turn from it.', ref:'Proverbs 22:6'},
+  {type:'verse', text:'For we are God\'s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.', ref:'Ephesians 2:10'},
+  {type:'verse', text:'Being confident of this, that he who began a good work in you will carry it on to completion.', ref:'Philippians 1:6'},
+  // More classics
+  {type:'joke', setup:'Why did the kids\' ministry volunteer drink decaf?', punchline:'Because they already had enough Holy Spirit energy for the whole building.'},
+  {type:'joke', setup:'Why don\'t kids\' ministry volunteers ever get lost?', punchline:'Because they always follow the Way.'},
+  {type:'joke', setup:'Why did the kid bring a ladder to worship?', punchline:'He heard the praise was going through the roof.'},
+  {type:'joke', setup:'What\'s a kids\' ministry volunteer\'s superpower?', punchline:'The ability to hear a whisper from across a loud room while also leading a craft, answering a theology question, and locating a missing shoe.'},
+  {type:'joke', setup:'How does Moses make his coffee?', punchline:'He brews it.'},
+  {type:'joke', setup:'Why did Samson never use social media?', punchline:'He didn\'t want anyone cutting his followers.'},
+  {type:'joke', setup:'Chuck Norris memorized the entire New Testament.', punchline:'The New Testament then memorized Chuck Norris, just to be safe.'},
+  {type:'joke', setup:'Chuck Norris once played freeze tag with a group of kindergartners.', punchline:'The kindergartners are still frozen.'},
+  {type:'joke', setup:'What did the Bible say to the pencil?', punchline:'You\'ve got a point.'},
+  {type:'joke', setup:'Why did the church musician get locked out?', punchline:'They lost their keys. All of them. Even the one in G.'},
+  // Chuck Norris approved
+  {type:'joke', setup:'Chuck Norris once taught a Sunday school class.', punchline:'The kids still haven\'t stopped memorizing Scripture.'},
+  {type:'joke', setup:'Chuck Norris doesn\'t use a Bible bookmark.', punchline:'The pages are too afraid to move.'},
+  {type:'joke', setup:'Chuck Norris can recite the entire book of Psalms.', punchline:'Backwards. In Hebrew. While doing push-ups.'},
+  {type:'joke', setup:'How did Chuck Norris part the Red Sea?', punchline:'He just stared at it. The water left voluntarily.'},
+  {type:'joke', setup:'Chuck Norris once volunteered in kids\' ministry.', punchline:'The children behaved perfectly. Even the ones in the parking lot.'},
+
+  // Theologian quotes -- verified, focused on children, teaching, and the gospel
+  {type:'verse', text:'The opinion that children cannot receive the whole truth of the gospel is a great mistake, for their childlikeness is a help rather than a hindrance; older people must become as little children before they can enter the kingdom.', ref:'C.H. Spurgeon, Come Ye Children'},
+  {type:'verse', text:'Teaching is poor work when love is gone; it is like a smith working without a hammer, or a builder without mortar. Where there is no love, there will be no life.', ref:'C.H. Spurgeon, Come Ye Children'},
+  {type:'verse', text:'Youth is susceptible to evil doctrine. The only way to keep chaff out of the child\'s little measure is to fill it brimful with good wheat. Oh, that the Spirit of God may help us to do this!', ref:'C.H. Spurgeon, Come Ye Children'},
+  {type:'verse', text:'First be fed, and then feed. You cannot feed lambs unless you are first fed yourself.', ref:'C.H. Spurgeon, Come Ye Children'},
+  {type:'verse', text:'Do not sin against the child by coming to your class with a chilly heart. Why should you make your children cold toward divine truths?', ref:'C.H. Spurgeon'},
+  {type:'verse', text:'He that has trained his children for heaven, rather than for earth -- for God rather than for man -- he is the parent who will be called wise at the last.', ref:'J.C. Ryle, The Duties of Parents'},
+  {type:'verse', text:'If you train your children to anything, train them, at least, to a habit of prayer.', ref:'J.C. Ryle, The Duties of Parents'},
+  {type:'verse', text:'If you would train your children rightly, train them in the way they should go -- and not in the way that they would.', ref:'J.C. Ryle, The Duties of Parents'},
+  {type:'verse', text:'We are not asking our young children to leap in the dark. Real light is shining when you tell the story of the gospel. Your job is to present the truth and pray.', ref:'John Piper'},
+  {type:'verse', text:'The gospel is not a way to get people to heaven; it is a way to get people to God. It is a way of overcoming every obstacle to everlasting joy in God.', ref:'John Piper, God Is the Gospel'},
+  {type:'verse', text:'God is most glorified in us when we are most satisfied in him.', ref:'John Piper, Desiring God'},
+  {type:'verse', text:'Grace is not simply leniency when we have sinned. Grace is the enabling gift of God not to sin. Grace is power, not just pardon.', ref:'John Piper, The Pleasures of God'},
+  {type:'verse', text:'The gospel is this: We are more sinful and flawed in ourselves than we ever dared believe, yet at the very same time we are more loved and accepted in Jesus Christ than we ever dared hope.', ref:'Tim Keller, The Prodigal God'},
+  {type:'verse', text:'It is not the strength of your faith but the object of your faith that actually saves you. Strong faith in a weak branch is fatally inferior to weak faith in a strong branch.', ref:'Tim Keller, The Reason for God'},
+
+];;
+
+// --- STATE ---
+const State = {
+  data:             null,
+  roomMode:         new URLSearchParams(location.search).get('room') || null,
+  isAdminMode:      new URLSearchParams(location.search).get('mode') === 'admin',
+  alertDismissed:   false,
+  alertCurrentMsg:  '',
+  seenAlertIds:     [],
+  catMode:          'kids',
+  catNum:           0,
+  catSettings:      {},
+
+  dismissUrgentAlert() {
+    this.alertDismissed = true;
+    document.getElementById('alertOverlay').classList.remove('active');
+  }
+};
+
+// --- UTILITIES ---
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function el(id) { return document.getElementById(id); }
+function nowMins() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+function parseTimeMins(str) {
+  if (!str) return null;
+  const m = String(str).match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!m) return null;
+  let h = parseInt(m[1]); const min = parseInt(m[2]); const ap = m[3].toUpperCase();
+  if (ap === 'PM' && h !== 12) h += 12;
+  if (ap === 'AM' && h === 12) h = 0;
+  return h * 60 + min;
+}
+function fmtSecs(s) {
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+
+// --- CLOCK ---
+(function initClock() {
+  const DA = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MO_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function tick() {
+    const d = new Date();
+    const h = d.getHours(), m = d.getMinutes();
+    const ap = h >= 12 ? 'PM' : 'AM';
+    const hh = (h % 12) || 12;
+    const mm = String(m).padStart(2, '0');
+    el('hclock').textContent = hh + ':' + mm + ' ' + ap;
+    el('hdate').textContent  = DA[d.getDay()] + ' ' + d.getDate();
+    el('dateBig').textContent  = DA[d.getDay()] + ', ' + MO[d.getMonth()] + ' ' + d.getDate();
+    el('dateFull').textContent = MO_FULL[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+  tick();
+  setInterval(tick, 15000);
+})();
+
+// --- SYNC ---
+const Sync = {
+  timer: null,
+
+  async fetch() {
+    const dot = el('syncDot');
+    dot.className = 'sync-dot loading';
+    el('statusText').textContent = 'Syncing\u2026';
+    try {
+      const res  = await fetch(WORKER_URL + '?action=read', { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      State.data = data;
+      Render.all(data);
+      dot.className = 'sync-dot';
+      const t = new Date();
+      el('lastSync').textContent = 'Synced ' + t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      el('statusText').textContent = 'Live';
+    } catch (err) {
+      dot.className = 'sync-dot error';
+      el('statusText').textContent = 'Error -- ' + err.message;
+    }
+  },
+
+  start() {
+    this.fetch();
+    this.timer = setInterval(() => this.fetch(), REFRESH_MS);
+  },
+
+  stop() { clearInterval(this.timer); }
+};
+
+// --- RENDER ---
+const Render = {
+  all(data) {
+    this.ticker(data.ticker || []);
+    this.announcements(data.announcements || []);
+    this.classes(data.classes || []);
+    this.settings(data.settings || {});
+    this.alerts(data.alerts || []);
+    CD.update(data.classes || []);
+  },
+
+  ticker(items) {
+    const wrap  = el('tickerWrap');
+    const track = el('tickerTrack');
+    const msgs  = items.filter(t => t.message).map(t => esc(t.message));
+    if (!msgs.length) { wrap.classList.add('hidden'); return; }
+    wrap.classList.remove('hidden');
+    const html = msgs.map(m => '<span class="ticker-item">' + m + '<span class="ticker-sep"></span></span>').join('');
+    track.innerHTML = html + html;
+    track.style.animation = 'none';
+    track.style.transform = 'translateX(0)';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const w = track.scrollWidth / 2;
+        track.style.animation = 'tickerScroll ' + (w / 60).toFixed(1) + 's linear infinite';
+      });
+    });
+  },
+
+  announcements(items) {
+    const isS1 = s => ['1st service','1st','first','1','service1'].includes((s||'').toLowerCase().trim());
+    const isS2 = s => ['2nd service','2nd','second','2','service2'].includes((s||'').toLowerCase().trim());
+    const global = items.filter(a => !isS1(a.scope) && !isS2(a.scope));
+    const s1     = items.filter(a => isS1(a.scope));
+    const s2     = items.filter(a => isS2(a.scope));
+    this._annList(global, 'annGlobal');
+    this._annList(s1,     'annS1');
+    this._annList(s2,     'annS2');
+  },
+
+  _annList(items, elId) {
+    const c = ANN_COLORS;
+    el(elId).innerHTML = items.length
+      ? items.map(a => {
+          const col = c[a.tag] || c.Info;
+          return '<div class="ann-item">'
+            + '<div class="ann-bar" style="background:' + col.bar + '"></div>'
+            + '<div class="ann-body">'
+            + '<div class="ann-title">' + esc(a.title) + '</div>'
+            + (a.detail ? '<div class="ann-detail">' + esc(a.detail) + '</div>' : '')
+            + '<span class="ann-tag" style="background:' + col.bg + ';color:' + col.text + '">' + esc(a.tag || 'Info') + '</span>'
+            + '</div></div>';
+        }).join('')
+      : '<p class="ann-empty">No announcements.</p>';
+  },
+
+  classes(rows) {
+    const tabBar = el('classTabBar');
+    const panels = el('classPanels');
+
+    // Group data
+    const groups = {};
+    const curriculum = {};
+    const notes = {};
+    rows.forEach(r => {
+      const cls = r.class || '';
+      if (!cls) return;
+      if (!groups[cls]) groups[cls] = { '1st': [], '2nd': [] };
+      const svc = (r.service || '').toLowerCase();
+      const key = (svc === '2nd' || svc === 'second') ? '2nd' : '1st';
+      groups[cls][key].push(r);
+      if (r.curriculum_link && !curriculum[cls]) curriculum[cls] = r.curriculum_link;
+      if (r.notes && !notes[cls]) notes[cls] = r.notes;
+    });
+
+    const order = [...CLASS_ORDER, ...Object.keys(groups).filter(c => !CLASS_ORDER.includes(c))];
+
+    tabBar.innerHTML = '';
+    panels.innerHTML = '';
+
+    order.forEach((cls, i) => {
+      if (!groups[cls]) return;
+      const isFirst    = i === 0;
+      const isRoomMatch = State.roomMode && State.roomMode.toLowerCase() === cls.toLowerCase();
+      const active     = State.roomMode ? isRoomMatch : isFirst;
+
+      // Tab
+      const btn = document.createElement('button');
+      btn.className = 'class-tab' + (active ? ' active' : '');
+      btn.textContent = cls;
+      btn.addEventListener('click', () => UI.switchClassTab(cls, btn));
+      tabBar.appendChild(btn);
+
+      // Panel
+      const panel = document.createElement('div');
+      panel.className = 'class-panel' + (active ? ' active' : '') + (isRoomMatch ? ' room-active' : '');
+      panel.dataset.cls = cls;
+
+      if (curriculum[cls]) {
+        const a = document.createElement('a');
+        a.className = 'curriculum-btn';
+        a.href = curriculum[cls];
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Open curriculum folder';
+        panel.appendChild(a);
+      }
+      if (notes[cls]) {
+        const nd = document.createElement('div');
+        nd.className = 'vol-notes';
+        nd.innerHTML = '<div class="vol-notes-label">Volunteer notes</div><div class="vol-notes-text">' + esc(notes[cls]) + '</div>';
+        panel.appendChild(nd);
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'sched-grid';
+      ['1st','2nd'].forEach((svc, si) => {
+        const col  = document.createElement('div');
+        const lbl  = document.createElement('div');
+        lbl.className = 'svc-label svc-label-' + (si + 1);
+        lbl.textContent = svc + ' Service';
+        col.appendChild(lbl);
+        col.innerHTML += this._schedRows(groups[cls][svc] || []);
+        grid.appendChild(col);
+      });
+      panel.appendChild(grid);
+      panels.appendChild(panel);
+    });
+  },
+
+  _schedRows(rows) {
+    if (!rows.length) return '<p class="no-sched">No schedule.</p>';
+    const now       = nowMins();
+    const autoIdx   = (() => {
+      let cur = -1;
+      rows.forEach((r, i) => { const t = parseTimeMins(r.time); if (t !== null && t <= now) cur = i; });
+      return cur;
+    })();
+
+    return rows.map((r, i) => {
+      const isNow = i === autoIdx;
+      let progress = '';
+      if (isNow && i + 1 < rows.length) {
+        const s = parseTimeMins(r.time) || 0;
+        const e = parseTimeMins(rows[i+1].time) || s + 30;
+        const pct = Math.min(100, Math.max(0, Math.round((now - s) / (e - s) * 100)));
+        progress = '<div class="sched-progress"><div class="sched-progress-fill" style="width:' + pct + '%"></div></div>';
+      }
+      const isPickup = (r.event || '').toLowerCase().includes('pickup') || (r.event || '').toLowerCase().includes('pick up');
+      const dot = isNow ? 'var(--red)' : isPickup ? 'var(--tan)' : 'var(--faint)';
+      return '<div class="sched-row' + (isNow ? ' now' : '') + '">'
+        + '<span class="sched-time">' + esc(r.time) + '</span>'
+        + '<div class="sched-dot" style="background:' + dot + '"></div>'
+        + '<div class="sched-info">'
+        + '<span class="sched-event">' + esc(r.event) + (isNow ? '<span class="now-pill">Now</span>' : '') + '</span>'
+        + (r.detail ? '<div class="sched-detail">' + esc(r.detail) + '</div>' : '')
+        + progress
+        + '</div></div>';
+    }).join('');
+  },
+
+  settings(s) {
+    if (s.service1_time) el('svc1Label').textContent = s.service1_time;
+    if (s.service2_time) el('svc2Label').textContent = s.service2_time;
+    el('svcNote').textContent = s.service_note || '';
+    Cat.render(s);
+    this.verse(s);
+  },
+
+  verse(s) {
+    const card = el('verseCard');
+    const text = s.verse_full || '';
+    const ref  = s.verse_ref  || '';
+    if (!text) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    el('verseText').textContent = text;
+    el('verseRef').textContent  = ref;
+  },
+
+  alerts(alerts) {
+    // Urgent broadcast alerts
+    const urgent = alerts.find(a => a.type === 'Urgent');
+    const msg    = urgent ? urgent.message : '';
+    if (msg && msg !== State.alertCurrentMsg) {
+      State.alertCurrentMsg = msg;
+      State.alertDismissed  = false;
+      el('alertTitle').textContent = 'Urgent Alert';
+      el('alertMsg').textContent   = msg;
+      el('alertOverlay').classList.add('active');
+    } else if (!msg) {
+      State.alertCurrentMsg = '';
+      el('alertOverlay').classList.remove('active');
+    } else if (msg === State.alertCurrentMsg && !State.alertDismissed) {
+      el('alertOverlay').classList.add('active');
+    }
+
+    // Room alerts (admin mode only)
+    if (!State.isAdminMode) return;
+    const roomAlerts = alerts.filter(a => a.type === 'Room alert');
+    if (!roomAlerts.length) { el('iaBanner').classList.remove('active'); return; }
+    let hasNew = false;
+    const list = el('iaList');
+    list.innerHTML = '';
+    roomAlerts.forEach(a => {
+      if (!State.seenAlertIds.includes(a.id)) { hasNew = true; State.seenAlertIds.push(a.id); }
+      list.innerHTML += '<div class="ia-alert-item">'
+        + '<span class="ia-room">' + esc(a.room) + '</span>'
+        + '<span class="ia-msg">' + esc(a.message) + '</span>'
+        + '<span class="ia-time">' + esc(a.time) + '</span>'
+        + '</div>';
+    });
+    if (hasNew && navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    el('iaBanner').classList.add('active');
+  }
+};
+
+// --- CATECHISM ---
+const Cat = {
+  render(s) {
+    State.catSettings = s;
+    const num = parseInt(s.catechism_number || '0', 10);
+    State.catNum = num;
+    const q  = el('catQ');
+    const a  = el('catA');
+    const sc = el('catS');
+    const n  = el('catNum');
+    const btn = el('catBtn');
+    if (num >= 1 && num <= 52) {
+      const entry = NCC[num - 1];
+      q.textContent  = entry[0];
+      sc.textContent = entry[3];
+      a.textContent  = State.catMode === 'kids' ? entry[2] : entry[1];
+      n.textContent  = 'Q' + num;
+      btn.style.display = 'inline-flex';
+      a.classList.remove('revealed');
+      el('catBtnLabel').textContent = 'Reveal answer';
+      this._syncBtns();
+    } else {
+      q.innerHTML = '<span style="font-family:DM Sans,sans-serif;font-size:12px;color:rgba(255,255,255,.3);font-style:normal">Set Catechism Number in Weekly Settings.</span>';
+      btn.style.display = 'none';
+    }
+  },
+  setMode(mode) {
+    State.catMode = mode;
+    this._syncBtns();
+    const num = State.catNum;
+    if (num >= 1 && num <= 52) {
+      const entry = NCC[num - 1];
+      const a = el('catA');
+      a.textContent = mode === 'kids' ? entry[2] : entry[1];
+      a.classList.remove('revealed');
+      el('catBtnLabel').textContent = 'Reveal answer';
+    }
+  },
+  toggle() {
+    const a = el('catA');
+    const showing = a.classList.toggle('revealed');
+    el('catBtnLabel').textContent = showing ? 'Hide answer' : 'Reveal answer';
+  },
+  _syncBtns() {
+    el('catKids').className  = 'dc-mode-btn' + (State.catMode === 'kids'  ? ' active' : '');
+    el('catAdult').className = 'dc-mode-btn' + (State.catMode === 'adult' ? ' active' : '');
+  }
+};
+
+// --- COUNTDOWN ---
+const CD = {
+  service:    localStorage.getItem(LS.CD + '_svc') || '1st',
+  cls:        localStorage.getItem(LS.CD + '_cls') || '',
+  allRows:    [],
+  timer:      null,
+
+  update(rows) {
+    this.allRows = rows;
+    // Auto-select first available class if none stored
+    if (!this.cls) {
+      for (const c of CLASS_ORDER) {
+        if (this.getRows(c, this.service).length) { this.cls = c; break; }
+      }
+    }
+    this.tick();
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.tick(), 1000);
+  },
+
+  getRows(cls, svc) {
+    return this.allRows.filter(r => {
+      const rc  = r.class || '';
+      const rs  = (r.service || '').toLowerCase();
+      const is2 = rs === '2nd' || rs === 'second';
+      return rc === cls && (svc === '2nd' ? is2 : !is2);
+    });
+  },
+
+  tick() {
+    const bar = el('countdownBar');
+    const rows = this.getRows(this.cls, this.service);
+    if (!rows.length) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+
+    const now    = nowMins();
+    const nowSec = new Date().getSeconds();
+    let curIdx = -1;
+    rows.forEach((r, i) => { const t = parseTimeMins(r.time); if (t !== null && t <= now) curIdx = i; });
+
+    const evtEl   = el('cdEvent');
+    const rightEl = el('cdRight');
+    const hint    = el('cdHint');
+    hint.textContent = (this.cls || 'All') + ' \u2022 ' + this.service + ' -- tap to change';
+
+    // Pickup detection
+    const pickup = el('pickupBanner');
+    const isPickup = curIdx >= 0 && ((rows[curIdx].event || '').toLowerCase().includes('pickup') || (rows[curIdx].event || '').toLowerCase().includes('pick up'));
+    if (pickup) pickup.classList.toggle('hidden', !isPickup);
+
+    const nextIdx = curIdx + 1;
+
+    if (curIdx === -1) {
+      const first = rows[0]; const fm = parseTimeMins(first.time);
+      if (fm !== null) {
+        const sl = (fm - now) * 60 - nowSec;
+        evtEl.textContent = 'Until \u2018' + (first.event || '') + '\u2019';
+        rightEl.innerHTML = '<div class="cd-timer' + (sl < 300 ? ' urgent' : '') + '">' + (sl > 0 ? fmtSecs(sl) : '0:00') + '</div>';
+      }
+      return;
+    }
+    if (nextIdx >= rows.length) {
+      evtEl.textContent = rows[curIdx].event || '';
+      rightEl.innerHTML = '<span class="cd-pill">Now</span>';
+      return;
+    }
+    const next = rows[nextIdx]; const nm = parseTimeMins(next.time);
+    if (nm !== null) {
+      const sl2 = (nm - now) * 60 - nowSec;
+      if (sl2 <= 0) {
+        evtEl.textContent = next.event || '';
+        rightEl.innerHTML = '<span class="cd-pill">Now</span>';
+      } else {
+        evtEl.textContent = 'Until \u2018' + (next.event || '') + '\u2019';
+        rightEl.innerHTML = '<div class="cd-timer' + (sl2 < 300 ? ' urgent' : '') + '">' + fmtSecs(sl2) + '</div>';
+      }
+    }
+  },
+
+  setService(svc) {
+    this.service = svc;
+    localStorage.setItem(LS.CD + '_svc', svc);
+    el('cdBtn1').className = 'cd-svc-btn' + (svc === '1st' ? ' active' : '');
+    el('cdBtn2').className = 'cd-svc-btn' + (svc === '2nd' ? ' active' : '');
+    // Reset class if no rows for new service
+    if (!this.getRows(this.cls, svc).length) this.cls = '';
+    UI.populateCdClasses();
+    this.tick();
+  },
+
+  setClass(cls) {
+    this.cls = cls;
+    localStorage.setItem(LS.CD + '_cls', cls);
+    UI.populateCdClasses();
+    this.tick();
+  }
+};
+
+// --- ROOM ALERTS ---
+const RoomAlert = {
+  async send(type) {
+    const room = State.roomMode || 'Unknown';
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const payload = { operation: 'create', database: 'alerts', data: {
+      Message: [{ text: { content: room + ': ' + type } }],
+      Type:    { name: 'Room alert' },
+      Room:    { name: room },
+      Time:    [{ text: { content: time } }],
+      Active:  true,
+    }};
+    try {
+      await fetch(WORKER_URL + '?action=write', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        cache: 'no-store',
+      });
+    } catch (e) { /* fire and forget */ }
+    el('raSent').style.display = 'block';
+    setTimeout(() => { UI.closeRoomAlert(); el('raSent').style.display = 'none'; }, 2000);
+  }
+};
+
+async function clearRoomAlerts() {
+  const data = State.data;
+  if (!data) return;
+  const roomAlerts = (data.alerts || []).filter(a => a.type === 'Room alert');
+  await Promise.all(roomAlerts.map(a =>
+    fetch(WORKER_URL + '?action=write', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ operation: 'delete', pageId: a.id }),
+      cache: 'no-store',
+    }).catch(() => {})
+  ));
+  State.seenAlertIds = [];
+  el('iaBanner').classList.remove('active');
+  Sync.fetch();
+}
+
+// --- ENCOURAGEMENT ---
+const Enc = {
+  idx: -1,
+  next() {
+    let i;
+    do { i = Math.floor(Math.random() * ENCOURAGEMENT.length); } while (i === this.idx && ENCOURAGEMENT.length > 1);
+    this.idx = i;
+    const item = ENCOURAGEMENT[i];
+    const body = el('encBody');
+    if (item.type === 'joke') {
+      body.innerHTML = '<span class="enc-type-badge enc-type-joke">Joke</span>'
+        + '<div class="enc-setup">' + esc(item.setup) + '</div>'
+        + '<div class="enc-punchline">' + esc(item.punchline) + '</div>';
+    } else {
+      body.innerHTML = '<span class="enc-type-badge enc-type-verse">Quote</span>'
+        + '<div class="enc-verse-text">' + esc(item.text) + '</div>'
+        + '<div class="enc-verse-ref">' + esc(item.ref) + '</div>';
+    }
+  }
+};
+
+// --- UI ---
+const UI = {
+  toggleDark() {
+    const on = document.body.classList.toggle('dark');
+    localStorage.setItem(LS.DARK, on ? '1' : '0');
+  },
+
+  switchSvcTab(n) {
+    el('tab1').className = 'svc-tab' + (n === 1 ? ' s1' : '');
+    el('tab2').className = 'svc-tab' + (n === 2 ? ' s2' : '');
+    el('panelS1').className = 'svc-panel' + (n === 1 ? ' active' : '');
+    el('panelS2').className = 'svc-panel' + (n === 2 ? ' active' : '');
+  },
+
+  switchClassTab(cls, btn) {
+    document.querySelectorAll('.class-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.class-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.class-panel').forEach(p => {
+      if (p.dataset.cls === cls) p.classList.add('active');
+    });
+  },
+
+  openCdPicker() {
+    el('cdBtn1').className = 'cd-svc-btn' + (CD.service === '1st' ? ' active' : '');
+    el('cdBtn2').className = 'cd-svc-btn' + (CD.service === '2nd' ? ' active' : '');
+    this.populateCdClasses();
+    el('cdPickerOverlay').classList.add('open');
+  },
+  closeCdPicker() { el('cdPickerOverlay').classList.remove('open'); },
+
+  populateCdClasses() {
+    const list = el('cdClassList');
+    list.innerHTML = '';
+    CLASS_ORDER.forEach(cls => {
+      if (!CD.getRows(cls, CD.service).length) return;
+      const btn = document.createElement('button');
+      btn.className = 'cd-class-btn' + (cls === CD.cls ? ' active' : '');
+      btn.textContent = cls;
+      btn.addEventListener('click', () => CD.setClass(cls));
+      list.appendChild(btn);
+    });
+  },
+
+  openRoomAlert() {
+    el('raSent').style.display = 'none';
+    el('raTitle').textContent = State.roomMode ? 'Alert from ' + State.roomMode : 'Send alert';
+    el('raOverlay').classList.add('open');
+  },
+  closeRoomAlert() { el('raOverlay').classList.remove('open'); },
+
+  openEnc() { Enc.next(); el('encOverlay').classList.add('open'); },
+  closeEnc() { el('encOverlay').classList.remove('open'); },
+};
+
+// --- INIT ---
+(function init() {
+  // Dark mode
+  if (localStorage.getItem(LS.DARK) === '1') document.body.classList.add('dark');
+
+  // Room mode
+  if (State.roomMode) {
+    document.body.classList.add('room-mode');
+    el('roomBar').classList.add('visible');
+    el('roomBarName').textContent = State.roomMode;
+    el('annSection').style.display  = 'none';
+    el('faithSection').style.display = 'none';
+    el('roomAlertSection').style.display = 'block';
+    el('raTitle').textContent = 'Alert from ' + State.roomMode;
+  }
+
+  // Admin mode
+  if (State.isAdminMode) {
+    el('roomBar').classList.add('visible');
+    el('roomBarName').textContent = 'Admin view';
+  }
+
+  // Logo triple-tap \u2192 admin
+  let tapCount = 0, tapTimer;
+  document.querySelector('.logo').addEventListener('click', () => {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+    if (tapCount >= 3) { tapCount = 0; window.location.href = '/village-kids-dashboard/admin.html'; }
+  });
+
+  // Wake on visibility
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) Sync.fetch(); });
+  window.addEventListener('focus', () => Sync.fetch());
+
+  // Start
+  Sync.start();
+})();
+</script>
+</body>
+</html>
