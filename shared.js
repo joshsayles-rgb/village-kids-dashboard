@@ -3,7 +3,7 @@
 
   const CONFIG = {
     WORKER_URL: 'https://sparkling-surf-f15f.joshsayles.workers.dev',
-    APP_ROOT: '/village-kids-dashboard/'
+    APP_ROOT: '/'
   };
 
   function el(id){ return document.getElementById(id); }
