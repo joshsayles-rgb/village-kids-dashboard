@@ -42,7 +42,7 @@ const Volunteers = {
     if (!card || !tabBar || !panels) {
       console.warn('Volunteers: missing required elements', { card, tabBar, panels });
       return;
-    }
+    }'
 
     // Debug (leave for now)
     console.log('volunteers:', vols);
