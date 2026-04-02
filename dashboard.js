@@ -1053,6 +1053,8 @@ render() {
     });
     tabBar.appendChild(tab);
   });
+  console.log('volunteers:', vols);
+console.log('classes:', classes);
 console.log('vol elements:', {
   card,
   tabBar,
