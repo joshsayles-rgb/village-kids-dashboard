@@ -2,7 +2,7 @@
   'use strict';
 
   const CONFIG = {
-    WORKER_URL: 'PASTE_YOUR_WORKER_URL_HERE',
+    WORKER_URL: 'https://sparkling-surf-f15f.joshsayles.workers.dev',
     APP_ROOT: '/village-kids-dashboard/'
   };
 
