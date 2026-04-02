@@ -22,7 +22,15 @@ body.dark{
   --rule:rgba(255,255,255,.07); --rule2:rgba(255,255,255,.12);
   --text:#e8e5df; --muted:rgba(232,229,223,.45); --faint:rgba(232,229,223,.22);
 }
-html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased;font-size:15px}
+html,body{
+  min-height:100%;
+  font-family:'DM Sans',sans-serif;
+  background:var(--cream);
+  background-color:var(--cream);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  font-size:15px
+}
 
 /* HEADER */
 header{background:var(--dark);height:56px;padding:0 20px;padding-top:env(safe-area-inset-top);height:calc(56px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.05)}
@@ -54,19 +62,42 @@ header{background:var(--dark);height:56px;padding:0 20px;padding-top:env(safe-ar
 
 /* LAYOUT */
 .page{max-width:720px;margin:0 auto;padding:20px 16px 60px;display:flex;flex-direction:column;gap:20px}
-.section{background:var(--white);border-radius:var(--rl);border:1px solid var(--rule);overflow:hidden}
+.section{
+  background-color:var(--white);
+  border-radius:var(--rl);
+  border:1px solid var(--rule);
+  overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,0.05)
+}
 .section-hdr{padding:13px 16px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between}
 .section-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text)}
 .section-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 
 /* FORM ELEMENTS */
 .field-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.field-input{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 12px;border:1px solid var(--rule2);border-radius:var(--r);background:var(--off);color:var(--text);outline:none;transition:border-color .2s;-webkit-appearance:none}
-.field-input:focus{border-color:var(--tan);background:var(--white)}
+.field-input{
+  width:100%;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;
+  padding:9px 12px;
+  border:1px solid var(--rule2);
+  border-radius:var(--r);
+  background-color:var(--white);
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s, background-color .2s;
+  -webkit-appearance:none
+}
+.field-input:focus{border-color:var(--tan);background-color:var(--white)}
 .field-input::placeholder{color:var(--faint)}
 select.field-input{cursor:pointer}
 .field-row{display:flex;gap:8px;align-items:flex-end}
 .field-row .field-input{flex:1}
+body.dark .field-input{
+  background-color:#2c2e2e;
+  color:#e8e5df;
+  border-color:rgba(255,255,255,.12)
+}
 
 /* BUTTONS */
 .btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:8px 14px;border-radius:var(--r);border:none;cursor:pointer;transition:opacity .15s;white-space:nowrap;flex-shrink:0}
@@ -77,7 +108,7 @@ select.field-input{cursor:pointer}
 .btn-full{width:100%;padding:11px;font-size:13px}
 
 /* LIST ITEMS */
-.list-item{display:flex;align-items:flex-start;gap:10px;background:var(--off);border-radius:var(--r);padding:10px 12px;border:1px solid var(--rule)}
+.list-item{display:flex;align-items:flex-start;gap:10px;background-color:var(--off);border-radius:var(--r);padding:10px 12px;border:1px solid var(--rule)}
 .list-item-body{flex:1;min-width:0}
 .list-item-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.3}
 .list-item-sub{font-size:11px;color:var(--muted);margin-top:2px}
@@ -281,7 +312,6 @@ const PIN_KEY    = 'vk_pin_exp';
 const PIN_TTL    = 4 * 60 * 60 * 1000;
 const DARK_KEY   = 'vk_dark';
 
-// \u2500\u2500 STATE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const S = {
   announcements: [],
   ticker:        [],
@@ -305,7 +335,6 @@ function toggleDark() {
   localStorage.setItem(DARK_KEY, on ? '1' : '0');
 }
 
-// \u2500\u2500 PIN \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const Pin = {
   entry: '',
 
@@ -348,7 +377,6 @@ const Pin = {
   unlock() { loadData(); }
 };
 
-// \u2500\u2500 DATA LOAD \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 async function loadData() {
   try {
     const res  = await fetch(WORKER_URL + '?action=read', { cache: 'no-store' });
@@ -379,7 +407,6 @@ async function notionWrite(payload) {
   return data;
 }
 
-// \u2500\u2500 RENDER \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 function renderAll() {
   renderAnnouncements();
   renderTicker();
@@ -464,7 +491,6 @@ function renderAlerts() {
   }
 }
 
-// \u2500\u2500 ANNOUNCEMENTS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const Announcements = {
   async add() {
     const title  = el('newAnnTitle').value.trim();
@@ -503,7 +529,6 @@ const Announcements = {
   }
 };
 
-// \u2500\u2500 TICKER \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const Ticker = {
   async add() {
     const msg = el('newTickerMsg').value.trim();
@@ -532,7 +557,6 @@ const Ticker = {
   }
 };
 
-// \u2500\u2500 SETTINGS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const Settings = {
   async save() {
     const s = S.settings;
@@ -556,7 +580,6 @@ const Settings = {
   }
 };
 
-// \u2500\u2500 NOW TOGGLE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const NowToggle = {
   render() {
     const cls  = el('nowClassSel').value;
@@ -573,17 +596,14 @@ const NowToggle = {
   },
 
   async toggle(id, cls) {
-    // Clear all in class, set this one if not already set
     const rows   = S.classes.filter(r => r.class === cls && (r.service||'').toLowerCase() !== '2nd');
     const target = rows.find(r => r.id === id);
     const wasNow = target && target.now;
     setStatus('save-saving', 'Saving...');
     try {
-      // Update all rows in class (clear now)
       await Promise.all(rows.map(r =>
         notionWrite({ operation: 'update', pageId: r.id, data: { Now: !wasNow && r.id === id } })
       ));
-      // Update local state
       rows.forEach(r => { r.now = (!wasNow && r.id === id); });
       this.render();
       setStatus('save-ok', 'Saved');
@@ -591,12 +611,10 @@ const NowToggle = {
   }
 };
 
-// \u2500\u2500 URGENT ALERT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 const Alert = {
   async send() {
     const msg = el('newAlertMsg').value.trim();
     if (!msg) { el('newAlertMsg').focus(); return; }
-    // Clear any existing urgent alert first
     const existing = S.alerts.find(a => a.type === 'Urgent');
     if (existing) await this.clear(existing.id, true);
     setStatus('save-saving', 'Sending...');
@@ -625,7 +643,6 @@ const Alert = {
   }
 };
 
-// \u2500\u2500 INIT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 if (localStorage.getItem(DARK_KEY) === '1') document.body.classList.add('dark');
 Pin.init();
 </script>
