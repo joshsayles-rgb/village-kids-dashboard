@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Village Kids Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div class="pin-screen" id="pinScreen">
+  <div class="pin-logo">Village Kids</div>
+  <div class="pin-title">Admin PIN</div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-error" id="pinError"></div>
+  <div class="pin-pad">
+    <button class="pin-key" data-click="Pin.key('1')">1</button>
+    <button class="pin-key" data-click="Pin.key('2')">2</button>
+    <button class="pin-key" data-click="Pin.key('3')">3</button>
+    <button class="pin-key" data-click="Pin.key('4')">4</button>
+    <button class="pin-key" data-click="Pin.key('5')">5</button>
+    <button class="pin-key" data-click="Pin.key('6')">6</button>
+    <button class="pin-key" data-click="Pin.key('7')">7</button>
+    <button class="pin-key" data-click="Pin.key('8')">8</button>
+    <button class="pin-key" data-click="Pin.key('9')">9</button>
+    <button class="pin-key" data-click="Pin.key('0')">0</button>
+    <button class="pin-key pin-del" data-click="Pin.del()">&larr;</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-left">
+    <button class="back-btn" data-click="window.location.href='vk-dashboard-v10.html'">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Dashboard
+    </button>
+    <span class="header-title">Admin</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="save-status" id="saveStatus"></span>
+    <button class="icon-btn" data-click="toggleDark()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="page" id="adminPage">
+
+  <!-- ANNOUNCEMENTS -->
+  <div class="section">
+    <div class="section-hdr">
+      <span class="section-title">Announcements</span>
+    </div>
+    <div class="section-body">
+      <div id="annList"></div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding-top:6px;border-top:1px solid var(--rule)">
+        <div class="field-row">
+          <div style="flex:none;width:130px">
+            <div class="field-label">Scope</div>
+            <select class="field-input" id="newAnnScope">
+              <option value="All services">All services</option>
+              <option value="1st Service">1st Service</option>
+              <option value="2nd Service">2nd Service</option>
+            </select>
+          </div>
+          <div style="flex:none;width:110px">
+            <div class="field-label">Tag</div>
+            <select class="field-input" id="newAnnTag">
+              <option value="Info">Info</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Event">Event</option>
+              <option value="Prayer">Prayer</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Title</div>
+          <input class="field-input" id="newAnnTitle" placeholder="Announcement title..." maxlength="80">
+        </div>
+        <div>
+          <div class="field-label">Detail (optional)</div>
+          <div class="field-row">
+            <input class="field-input" id="newAnnDetail" placeholder="Supporting detail..." maxlength="140">
+            <button class="btn btn-tan" data-click="Announcements.add()">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="section">
+    <div class="section-hdr"><span class="section-title">Scrolling ticker</span></div>
+    <div class="section-body">
+      <div id="tickerList"></div>
+      <div style="padding-top:6px;border-top:1px solid var(--rule)">
+        <div class="field-label">New message</div>
+        <div class="field-row">
+          <input class="field-input" id="newTickerMsg" placeholder="Ticker message..." maxlength="120">
+          <button class="btn btn-tan" data-click="Ticker.add()">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY SETTINGS -->
+  <div class="section">
+    <div class="section-hdr"><span class="section-title">This week</span></div>
+    <div class="section-body">
+      <div class="fields-grid">
+        <div>
+          <div class="field-label">1st service time</div>
+          <input class="field-input" id="ws1" placeholder="9:15 AM">
+        </div>
+        <div>
+          <div class="field-label">2nd service time</div>
+          <input class="field-input" id="ws2" placeholder="11:00 AM">
+        </div>
+        <div>
+          <div class="field-label">Catechism number</div>
+          <input class="field-input" id="wsCat" type="number" min="1" max="52" placeholder="1-52">
+        </div>
+        <div>
+          <div class="field-label">Service note</div>
+          <input class="field-input" id="wsNote" placeholder="Optional note...">
+        </div>
+      </div>
+      <div>
+        <div class="field-label">Memory verse</div>
+        <input class="field-input" id="wsVerse" placeholder="Full verse text...">
+      </div>
+      <div>
+        <div class="field-label">Verse reference</div>
+        <div class="field-row">
+          <input class="field-input" id="wsRef" placeholder="e.g. John 3:16">
+          <button class="btn btn-tan" data-click="Settings.save()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE NOW -->
+  <div class="section">
+    <div class="section-hdr"><span class="section-title">Schedule &mdash; mark current item</span></div>
+    <div class="section-body">
+      <div class="field-label" style="margin-bottom:2px">Select class</div>
+      <select class="field-input" id="nowClassSel" data-change="NowToggle.render()">
+        <option value="">Choose a class...</option>
+      </select>
+      <div class="now-list" id="nowList"></div>
+    </div>
+  </div>
+
+  <!-- URGENT ALERT -->
+  <div class="section">
+    <div class="section-hdr"><span class="section-title">Urgent alert</span></div>
+    <div class="section-body">
+      <div id="alertActiveSection"></div>
+      <div>
+        <div class="field-label">Alert message</div>
+        <div class="field-row" style="margin-top:4px">
+          <input class="field-input" id="newAlertMsg" placeholder="Alert message..." maxlength="160">
+          <button class="btn btn-red" data-click="Alert.send()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="shared.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
