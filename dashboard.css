@@ -328,7 +328,6 @@ body.dark .ra-sent{color:var(--green)}
 
 /* VOLUNTEERS FROM PCO */
 #volCard{display:none}
-#volCard.visible{display:block}
 .vol-section{margin-bottom:10px}
 .vol-svc-label{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;margin-top:8px}
 .vol-svc-label-1{color:var(--blue)}
