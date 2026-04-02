@@ -1047,7 +1047,11 @@ render() {
     });
     tabBar.appendChild(tab);
   });
-
+console.log('vol elements:', {
+  card,
+  tabBar,
+  panels
+});
   this.activeTab = defaultTab;
   panels.appendChild(this.buildPanel(vols[defaultTab]));
 },
