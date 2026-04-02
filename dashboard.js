@@ -995,7 +995,7 @@ const Audio = {
 const Vol = {
   activeTab: null,
 
-  render() {
+render() {
   const vols = State.volunteers || {};
   const card = el('volCard');
   const tabBar = el('volTabBar');
@@ -1003,7 +1003,6 @@ const Vol = {
 
   if (!card || !tabBar || !panels) return;
 
-  // Only show classes that actually have volunteers
   const classes = CLASS_ORDER.filter(
     cls => vols[cls] && (vols[cls].first?.length || vols[cls].second?.length)
   );
@@ -1013,11 +1012,10 @@ const Vol = {
     return;
   }
 
-  card.style.display = '';
+  card.style.display = 'block';
   tabBar.innerHTML = '';
   panels.innerHTML = '';
 
-  // In room mode, show only that room's volunteers
   if (State.roomMode) {
     const roomVols = vols[State.room];
     if (!roomVols) {
@@ -1029,7 +1027,6 @@ const Vol = {
     return;
   }
 
-  // No room mode: show tabs for all classes with volunteers
   tabBar.style.display = '';
   const defaultTab =
     this.activeTab && classes.includes(this.activeTab)
