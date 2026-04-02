@@ -408,10 +408,67 @@ body.admin-mode #cpFab{display:flex}
 
 
 /* --- refactor: shared surface tokens and explicit backgrounds --- */
-:root{--bg-page:var(--cream);--bg-panel:var(--off);--bg-card:var(--white);--bg-input:var(--white);--border:var(--rule2);--card:var(--white);--bg:var(--off)}
-body.dark{--bg-page:var(--cream);--bg-panel:var(--off);--bg-card:var(--white);--bg-input:#2c2e2e;--border:rgba(255,255,255,.12);--card:#2c2e2e;--bg:#252627}
-html,body,.page{background-color:var(--bg-page)}
-.card,.dark-card,.date-banner,.countdown-bar,.pickup-banner,.sheet,.room-select-card,.cp-drawer,.checkin-room{background-color:var(--bg-card)}
-.cp-drawer{background:var(--bg-page)}
-.cp-key,.cp-list-item,.checkin-room,.cp-input,.cp-select{background-color:var(--card)}
-.cp-handle-bar,.cp-dot,.cp-key,.cp-input,.cp-select,.cp-header,.cp-section{border-color:var(--border)}
+:root{
+  --bg-page:var(--cream);
+  --bg-panel:var(--off);
+  --bg-card:var(--white);
+  --bg-input:var(--white);
+  --border:var(--rule2);
+  --card:var(--white);
+  --bg:var(--off);
+}
+
+body.dark{
+  --bg-page:var(--cream);
+  --bg-panel:var(--off);
+  --bg-card:var(--white);
+  --bg-input:#2c2e2e;
+  --border:rgba(255,255,255,.12);
+  --card:#2c2e2e;
+  --bg:#252627;
+}
+
+html,body,.page{
+  background-color:var(--bg-page);
+}
+
+/* only light cards get the light surface */
+.card,
+.sheet,
+.room-select-card,
+.checkin-room{
+  background-color:var(--bg-card);
+}
+
+/* keep dark surfaces dark */
+.dark-card,
+.date-banner,
+.countdown-bar{
+  background-color:var(--dark);
+}
+
+.pickup-banner{
+  background-color:var(--tan);
+}
+
+.cp-drawer{
+  background:var(--bg-page);
+}
+
+.cp-key,
+.cp-list-item,
+.checkin-room,
+.cp-input,
+.cp-select{
+  background-color:var(--card);
+}
+
+.cp-handle-bar,
+.cp-dot,
+.cp-key,
+.cp-input,
+.cp-select,
+.cp-header,
+.cp-section{
+  border-color:var(--border);
+}
