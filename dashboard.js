@@ -1,5 +1,6 @@
 'use strict';
-
+console.log('NEW dashboard.js loaded at', new Date().toISOString());
+alert('NEW dashboard.js loaded');
 // --- CONSTANTS ---
 const WORKER_URL    = VKShared.CONFIG.WORKER_URL;
 const REFRESH_MS    = 30000;
