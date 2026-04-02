@@ -3,7 +3,7 @@
 // --- CONSTANTS ---
 const WORKER_URL    = VKShared.CONFIG.WORKER_URL;
 const REFRESH_MS    = 30000;
-const CLASS_ORDER   = ['Nursery','Toddler/Wobbler','Preschool','Kindergarten - 1st Grade','2nd-3rd Grade','4th-6th Grade'];
+const CLASS_ORDER = ['Nursery','Toddler/Wobbler','Preschool','Kindergarten - 1st Grade','2nd - 3rd Grade','4th - 6th Grade'];
 const ANN_COLORS    = { Info:{bar:'#5d8da1',bg:'rgba(93,141,161,.1)',text:'#3a7490'}, Urgent:{bar:'#954a4b',bg:'rgba(149,74,75,.1)',text:'#7a2e2f'}, Event:{bar:'#a0b46a',bg:'rgba(160,180,106,.12)',text:'#608030'}, Prayer:{bar:'#a9794d',bg:'rgba(169,121,77,.1)',text:'#7a5030'} };
 const LS            = { DARK:'vk_dark', CD:'vk_cd', PIN_EXPIRE:'vk_pin_exp' };
 
@@ -1011,7 +1011,7 @@ const Vol = {
     panels.innerHTML = '';
 
     // In room mode, show only that room's volunteers (no tabs)
-    if (State.room) {
+    if (State.roomMode) {
       const roomVols = vols[State.room];
       if (!roomVols) { card.style.display = 'none'; return; }
       panels.appendChild(this.buildPanel(roomVols));
