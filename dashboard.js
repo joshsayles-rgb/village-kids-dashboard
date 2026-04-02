@@ -393,6 +393,12 @@ const Render = {
         + '</div></div>';
     }).join('');
   },
+console.log('volunteers data:', State.volunteers);
+const classes = CLASS_ORDER.filter(
+  cls => vols[cls] && (vols[cls].first?.length || vols[cls].second?.length)
+);
+
+console.log('filtered classes:', classes);
 
   settings(s) {
     if (s.service1_time) el('svc1Label').textContent = s.service1_time;
