@@ -997,7 +997,7 @@ const Vol = {
 
   render() {
     const vols = State.volunteers || {};
-    const card = el('volCard');
+    const card = el('volCard').classList.add('visible').el('volCard').classList.remove('visible');
     const tabBar = el('volTabBar');
     const panels = el('volPanels');
     if (!card || !tabBar || !panels) return;
