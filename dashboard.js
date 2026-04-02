@@ -996,50 +996,63 @@ const Vol = {
   activeTab: null,
 
   render() {
-    const vols = State.volunteers || {};
-    const card = el('volCard').classList.add('visible').el('volCard').classList.remove('visible');
-    const tabBar = el('volTabBar');
-    const panels = el('volPanels');
-    if (!card || !tabBar || !panels) return;
+  const vols = State.volunteers || {};
+  const card = el('volCard');
+  const tabBar = el('volTabBar');
+  const panels = el('volPanels');
 
-    // Check if we have any volunteer data
-    const classes = CLASS_ORDER.filter(cls => vols[cls] && (vols[cls].first?.length || vols[cls].second?.length));
-    if (!classes.length) { card.style.display = 'none'; return; }
+  if (!card || !tabBar || !panels) return;
 
-    card.style.display = '';
-    tabBar.innerHTML = '';
-    panels.innerHTML = '';
+  // Only show classes that actually have volunteers
+  const classes = CLASS_ORDER.filter(
+    cls => vols[cls] && (vols[cls].first?.length || vols[cls].second?.length)
+  );
 
-    // In room mode, show only that room's volunteers (no tabs)
-    if (State.roomMode) {
-      const roomVols = vols[State.room];
-      if (!roomVols) { card.style.display = 'none'; return; }
-      panels.appendChild(this.buildPanel(roomVols));
-      tabBar.style.display = 'none';
+  if (!classes.length) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = '';
+  tabBar.innerHTML = '';
+  panels.innerHTML = '';
+
+  // In room mode, show only that room's volunteers
+  if (State.roomMode) {
+    const roomVols = vols[State.room];
+    if (!roomVols) {
+      card.style.display = 'none';
       return;
     }
+    panels.appendChild(this.buildPanel(roomVols));
+    tabBar.style.display = 'none';
+    return;
+  }
 
-    // No room mode -- show tabs for all classes with volunteers
-    tabBar.style.display = '';
-    const defaultTab = this.activeTab && classes.includes(this.activeTab) ? this.activeTab : classes[0];
+  // No room mode: show tabs for all classes with volunteers
+  tabBar.style.display = '';
+  const defaultTab =
+    this.activeTab && classes.includes(this.activeTab)
+      ? this.activeTab
+      : classes[0];
 
-    classes.forEach(cls => {
-      const tab = document.createElement('button');
-      tab.className = 'class-tab' + (cls === defaultTab ? ' active' : '');
-      tab.textContent = this.shortName(cls);
-      tab.addEventListener('click', () => {
-        this.activeTab = cls;
-        tabBar.querySelectorAll('.class-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        panels.innerHTML = '';
-        panels.appendChild(this.buildPanel(vols[cls]));
-      });
-      tabBar.appendChild(tab);
+  classes.forEach(cls => {
+    const tab = document.createElement('button');
+    tab.className = 'class-tab' + (cls === defaultTab ? ' active' : '');
+    tab.textContent = this.shortName(cls);
+    tab.addEventListener('click', () => {
+      this.activeTab = cls;
+      tabBar.querySelectorAll('.class-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      panels.innerHTML = '';
+      panels.appendChild(this.buildPanel(vols[cls]));
     });
+    tabBar.appendChild(tab);
+  });
 
-    this.activeTab = defaultTab;
-    panels.appendChild(this.buildPanel(vols[defaultTab]));
-  },
+  this.activeTab = defaultTab;
+  panels.appendChild(this.buildPanel(vols[defaultTab]));
+}
 
   buildPanel(volData) {
     const wrap = document.createElement('div');
