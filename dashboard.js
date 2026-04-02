@@ -1050,7 +1050,7 @@ render() {
 
   this.activeTab = defaultTab;
   panels.appendChild(this.buildPanel(vols[defaultTab]));
-}
+},
 
   buildPanel(volData) {
     const wrap = document.createElement('div');
